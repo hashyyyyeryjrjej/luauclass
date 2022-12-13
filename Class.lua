@@ -1,5 +1,5 @@
 local Class = {
-	ClassName = 'Class'
+	className = 'Class'
 }
 Class.__index = Class
 
@@ -16,7 +16,7 @@ end
 
 -- Return class name on stringify
 function Class:__tostring()
-	return self.ClassName
+	return self.className
 end
 
 -- Works like a pseudo-removal by locking the table from editing
