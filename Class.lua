@@ -1,57 +1,52 @@
 local Class = {
-	className = 'Class'
+	ClassName = 'Class'
 }
 Class.__index = Class
 
--- Returns all fields & methods inside self
-function Class:inspect()
-	local result = ''
-	
-	for index, value in self do
-		result ..= string.format('%s: %s', index, value) .. "\n"
-	end
-	
-	print(result)
-end
-
--- Return class name on stringify
-function Class:__tostring()
-	return self.className
-end
-
 -- Works like a pseudo-removal by locking the table from editing
-function Class:destroy()
+function Class:Destroy()
 	table.freeze(self)
 end
 
 -- Compare class to another with strings
-function Class:is(otherClass: string)
-	return tostring(self) == tostring(otherClass)
+function Class:Is(otherClass)
+	if typeof(otherClass) == 'table' then
+		otherClass = otherClass.ClassName
+	end
+	
+	return tostring(self) == otherClass
 end
 
 -- Base :new method; Doesn't serve much purpose except for occupying :new space on extensions
-function Class:new()
+function Class.new(self)
 	-- As to prevent using .new instead of :new
 	if not self then
-		warn('Desired class has no valid .new method; Did you forget to use ":"?')
+		warn( string.format('Class %s has no defined .new() method; Utilizing default Class .new()', self.ClassName) )
 		self = Class
 	end
-	
+
 	return setmetatable({}, self)
 end
 
 -- Extension method to inherit fields & functions
-function Class:extend()
+function Class:Extend()
 	if not self then
 		warn('No valid class to extend from; Did you forget to use ":"?')
 		return
 	end
-	
+
 	local object = {}
 	object.__index = object
-	object._inheritsFrom = tostring(self)
-	
+	object.__super = self
+
 	return setmetatable(object, self)
+end
+
+-- Metamethods
+
+-- Alias for :new
+function Class:__call(...)
+	return Class:new(...)
 end
 
 return Class
