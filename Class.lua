@@ -31,7 +31,7 @@ end
 -- Makes a new object from the super
 -- Good for making .new functions on inherited objects
 function Class:newSuperClassObject(...)
-	return self.__super.new(...)
+	return setmetatable(self.__super.new(...), self)
 end
 
 -- Extension method to inherit fields & functions
